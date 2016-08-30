@@ -1,0 +1,2 @@
+Aug 21, 10pm; After getting the VirtualBox set up wrote the lines of code needed to get the
+	assignment done. finished it and ran the mp3 to see that it works.
