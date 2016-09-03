@@ -8,11 +8,6 @@ const char *params = "PATTERN I\nOUTPUT langton.mpg\nBASE_FILE_FORMAT PPM\n"
                      "INPUT_CONVERT *\nGOP_SIZE 650\nSLICES_PER_FRAME 1\n"
                      "INPUT_DIR .\nINPUT\n"
                      ".langton_data/*.pbm [0000000000-%d+%d]\n"
-                     "END_INPUT\nPIXEL HALF\nRANGE 10\n"
-                     "PSEARCH_ALG LOGARITHMIC\nBSEARCH_ALG CROSS2\nIQSCALE 8\n"
-                     "PQSCALE 10\nBQSCALE 25\nREFERENCE_FRAME ORIGINAL\n";
-
-#define NAME_TEMPLATE ".langton_data/%010u.pbm"
 static int _x_size, _y_size, _skip, _sequence_number;
 
 int start_encode(int x_size, int y_size, int skip)
@@ -20,6 +15,11 @@ int start_encode(int x_size, int y_size, int skip)
   if ((x_size * y_size) % 8) {
     fprintf(stderr, "Error: x_size * y_size must be divisible by 8.\n");
     return 1;
+                     "END_INPUT\nPIXEL HALF\nRANGE 10\n"
+                     "PSEARCH_ALG LOGARITHMIC\nBSEARCH_ALG CROSS2\nIQSCALE 8\n"
+                     "PQSCALE 10\nBQSCALE 25\nREFERENCE_FRAME ORIGINAL\n";
+
+#define NAME_TEMPLATE ".langton_data/%010u.pbm"
   }
 
   if (x_size * y_size > 65536) {

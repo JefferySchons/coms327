@@ -1,0 +1,11 @@
+Aug 30, 6:30pm
+	started on dungion_main.c and dungion_make_dungion.c. I amed these two seperate
+becouse i will need to call make_dungion (what makes the dungion map) eventualy and
+might as well do it from the start. dungoion_main right now will only call make_dungion
+untill more is added
+September 2; 5:15pm
+	finished dungion_map() so tha it correctly displayes the romes and they
+are stored in a array of room structs. TODO make hallways
+September 2; 6:15pm
+	made hallways work. TODO find out why some rooms seam disconected occationaly
+September 3; 10:30am tried to figure why some rooms are not connecter and odd hallways

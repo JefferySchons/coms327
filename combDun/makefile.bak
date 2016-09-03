@@ -1,0 +1,8 @@
+all: dungeon_make_dungeon dungeon_main
+
+dungeon_make_dungeon: dungeon_make_dungeon.c dungeon_header.h
+	gcc -Wall -Werror -ggdb dungeon_make_dungeon.c -o dungeon
+	
+dungeon_main: dungeon_header.h dungeon_main.c
+	gcc -Wall -Werror -ggdb ungeon_main.c -o dungeon
+
