@@ -1,0 +1,52 @@
+Aug 30, 6:30pm
+	started on dungion_main.c and dungion_make_dungion.c. I amed these two seperate
+becouse i will need to call make_dungion (what makes the dungion map) eventualy and
+might as well do it from the start. dungoion_main right now will only call make_dungion
+untill more is added
+September 2; 5:15pm
+	finished dungion_map() so tha it correctly displayes the romes and they
+are stored in a array of room structs. TODO make hallways
+September 2; 6:15pm
+	made hallways work. TODO find out why some rooms seam disconected occationaly
+September 3; 10:30am tried to figure why some rooms are not connecter and odd hallways
+September 5, 6  Found why its making more rooms then needed (when seting room count to
+2 it sometimes made 3) I was cycling through the entire room_placement_array every time
+its reset i made extra rooms
+September 6 8pm Found the bug with odd hallways, both the vertical andhorisonatal
+hallways originate from teh corner of the room (not squaring). TODO
+make up down, strait up down, and add up downhallways to left right
+	8:20 fixed it by redefining what next_room_number is (before checking if its 
+the last and redefining it) instead of having it count up every loop
+September 7: rolled the assignment 1.01 into the tarball for submition
+
+//forgot to update change log for 1.02 (sep 7-14)
+// load save didnt work, tried to use teachers code (hard to understand)
+September 17: read teachers code, wrote skelliten for code
+
+September 19: wrote the pathfinding function (both through wall and not)
+
+September 21: made thee print function work for these, it encodes the 
+distance to alpha numeric in print function
+
+September 22: in class the teacher mentioned that we did not have to include
+the save/load in future projects so I decided to redo 1.03 using my 1.01 and 
+not have a save/load.
+
+September 25: sunday using the code i had writen made the pathfinding function
+
+September 26: finished the pathfinding functions, had a probem with the printing
+
+September 27: fixed problem with printing (need to cast the array and print char)
+	code is done
+	
+September 30: got all of the structs made, the creature struct is used for both
+	pc and monsters, also have a array of creatures where [0] is pc.
+
+October 3: mon  got PC wondering around randomly
+October 4: tues, got the line of sight done
+October 5: got the monsters to chase and kill PC
+
+oct 15: got curses to work, mostly
+oct 16:  added staiways and made sure that they sould generate new dungion
+oct 17: make the input from keybord work, ceretified that new dungion was made 
+	on going down stairs

@@ -1,0 +1,700 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+
+struct room
+{
+	int x_pos; //uper left corrner
+	int y_pos;
+	int x_size;
+	int y_size;
+};
+int map_x_size;
+int map_y_size;
+int number_of_rooms;
+
+int make_dungeon_map(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[number_of_rooms],  int map_x_size, int map_y_size, int number_of_rooms);
+int print_map(char dungion_map[map_x_size][map_y_size], int map_x_size, int map_y_size, int number_of_rooms);
+int print_hardness_map(int dungion_hardness_map[map_x_size][map_y_size], int map_x_size, int map_y_size, int number_of_rooms);
+int save_dungion(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[number_of_rooms],  int map_x_size, int map_y_size, int number_of_rooms);
+int load_dungion(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[number_of_rooms],  int map_x_size, int map_y_size, int number_of_rooms);
+
+int main(int argc, char *argv[]){
+	int j;
+	int k;
+	int i;
+	
+	//initalize char dungion_map[map_x_size][map_y_size];
+	//initalize hardness map
+	//initalize struct array
+	map_x_size = 80; //horizontal
+	map_y_size = 21; // veritical
+	number_of_rooms = 6;
+	
+	char dungion_map[map_x_size][map_y_size];
+	
+	struct room room_array[number_of_rooms];
+	
+	int dungion_hardness_map[map_x_size][map_y_size];
+	int prompt_save=0;
+	int prompt_load=0;
+	
+	//preset information
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			
+			dungion_map[k][j]='+';
+			//note 255 is max hardness
+			dungion_hardness_map[k][j]=255;
+	  }
+	}
+	
+	//change to looping through argv
+	/*
+	-generate (or load if inabled)
+	-disply
+	(save if inabled)
+	-exit
+	*/
+	
+  for (i = 0; i < argc; i++) 
+  {
+		if(argv[i]!=NULL)
+		{
+			if(strcmp(argv[i], "--save") == 0)
+			{
+				prompt_save=1;
+			}
+			else if(strcmp(argv[i], "--load") == 0)
+			{
+				prompt_load=1;
+			}
+		}
+	}
+	k=prompt_save;
+	k=prompt_load;
+	srand(time(NULL));
+	
+	if(prompt_load==1)
+	{
+		//load from disk; 
+		k=load_dungion(dungion_map, dungion_hardness_map, room_array, map_x_size, map_y_size, number_of_rooms);
+		//temp
+		k=make_dungeon_map(dungion_map, dungion_hardness_map, room_array, map_x_size, map_y_size, number_of_rooms);
+	}
+	else
+	{
+		k=make_dungeon_map(dungion_map, dungion_hardness_map, room_array, map_x_size, map_y_size, number_of_rooms);
+	}
+	k=print_map(dungion_map, map_x_size, map_y_size, number_of_rooms);
+	if(prompt_save==1)
+	{
+		k=save_dungion(dungion_map, dungion_hardness_map, room_array, map_x_size, map_y_size, number_of_rooms);
+
+		//save file
+	}
+	else
+	{
+		//dont save
+	}
+	
+	//k=make_dungeon_map(dungion_map, dungion_hardness_map, room_array);
+	//k=print_map(dungion_map);
+	//k=print_hardness_map(dungion_hardness_map);
+	
+	/*
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			if(dungion_map[k][j]=='+')
+			{
+				printf("%c", ' ');
+			}
+			else
+			{
+				printf("%c", dungion_map[k][j]);
+			}
+			//print_char++;
+			
+	  }
+	}
+	*/
+	
+	return 0;
+}
+
+int make_dungeon_map(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[number_of_rooms], int map_x_size, int map_y_size, int number_of_rooms)
+{
+	/*
+	min reqs
+	80 units horizontal = x
+	21 units vertical = y
+	romms per dungion =6
+	rooms 4(x) * 3(y)
+	1 cell of non room between any 2 rooms
+	rooms cells drawn with .
+	corridor cells #
+	rock is spaces
+	no corridors inside rooms
+	edge is rock
+	*/ 
+	//int map_x_size = 80; //horizontal
+	//int map_y_size = 21; // veritical
+	//int number_of_rooms = 6;
+	int rand_x_size; //for x size of room
+	int rand_y_size; //for y size of room
+	int rand_x_place; //for x placement of room
+	int rand_y_place; //for y placement of room
+	int i;
+	int r; //counter
+	int j; //for printing to and from map (x)
+	int k; //for printing to and from map (y)	
+	
+	char dungion_map[map_x_size][map_y_size];
+	int dungion_hardness_map[map_x_size][map_y_size];
+	int room_placement_array[number_of_rooms][2]; //[row][collum]
+	struct room room_array[number_of_rooms];
+
+	//preset dungion map, will ignore all + when printing
+		for(j=0; j<map_x_size; j++)
+	{
+		for(k=0; k<map_y_size; k++)
+		{
+			dungion_map[j][k]='+';
+			dungion_hardness_map[k][j]=255;
+			
+	  }
+	}
+
+	int number_of_rooms_placed;
+  //foirst make of room_array
+  number_of_rooms_placed = 0;
+  int number_of_failures = 0; //number of times it has cycled through while
+  while(number_of_rooms_placed < number_of_rooms || number_of_failures < number_of_rooms)
+  {
+  	//populate array
+  	for(i=0; i<number_of_rooms; i++)
+  	{
+  		rand_x_size = (rand() %5) + 4;
+  		rand_y_size = (rand() %5) + 3;
+  		room_placement_array[i][0]=rand_x_size;
+  		room_placement_array[i][1]=rand_y_size;
+  		
+  		number_of_failures++;
+  	}
+  	
+  	//cycle through array trying to place rooms
+  	for(i=0; i<number_of_rooms-number_of_rooms_placed; i++)
+  	{
+  		rand_x_place = (rand() %80)+1; //+1 is so it wont have anything on row/columb 0
+  		rand_y_place = (rand() %21)+1;
+  		if(room_placement_array[i][0]+rand_x_place<80 && room_placement_array[i][1]+rand_y_place<21)
+  		{
+  			//valid room check if place ocupued
+  			int occupied =0;
+  			
+				for(j=rand_x_place-1; j<(rand_x_place+room_placement_array[i][0]+1); j++)
+				{
+					for(k=rand_y_place-1; k<(rand_y_place+room_placement_array[i][1]+1); k++)
+					{
+						if(dungion_map[j][k]=='.')
+						{
+							occupied=1;
+						}
+				  }
+				  //printf("Can't get here\n");
+				}
+  			
+  			if(occupied==0)
+  			{
+	  			
+	  			//add room
+	  			
+	  			struct room add_room;
+	  			add_room.x_pos = rand_x_place;
+	  			add_room.y_pos = rand_y_place;
+	  			add_room.x_size = room_placement_array[i][0];
+	  			add_room.y_size = room_placement_array[i][1];
+	  			
+	  			//add room to struct array
+	  			room_array[number_of_rooms_placed]=add_room;
+					
+					// edit map
+					for(j=rand_x_place; j<rand_x_place+room_placement_array[i][0]; j++)
+					{
+						for(k=rand_y_place; k<rand_y_place+room_placement_array[i][1]; k++)
+						{
+							dungion_map[j][k]='.';
+							dungion_hardness_map[j][k]=0;
+					  }
+					}
+					
+	  			
+	  			number_of_rooms_placed++;
+  			}
+  		}
+  		//if not added go to next room on list
+  	}
+  }
+  
+  //make hallways
+  /*
+    connect room in order
+    room #: 1->2->3-> ... ->last->1
+    if goes through another room do not 
+    eddit map
+    will not be saving the hallways
+    (in a structure)
+  */
+  int next_room_numb;
+  next_room_numb=0;
+  for(r=0; r<number_of_rooms; r++)
+  {
+  	//make coordor from room_array[r] to room_array[r+1]
+  	int left_right;  //x axes (also j is used above for it), right pos
+  	int up_down; //y axes (also k is used above for it), up is pos
+  	
+  	next_room_numb=r+1;
+  	if(next_room_numb==number_of_rooms)
+  	{
+  		next_room_numb=0;
+  	}
+  	
+    left_right = room_array[next_room_numb].x_pos - room_array[r].x_pos;
+  	up_down = room_array[next_room_numb].y_pos - room_array[r].y_pos;
+
+  	//"it" is refuring to room[r+1]
+  	//do note the up down here is asuming that increasing y goes up
+  	//i know inreality it is printed down
+  	if(left_right>0)
+		{
+			//its right 
+			for(i=room_array[r].x_pos; i<=room_array[next_room_numb].x_pos; i++)
+			{
+				if(dungion_map[i][room_array[r].y_pos] != '.')
+				{
+					dungion_map[i][room_array[r].y_pos] = '#';
+					dungion_hardness_map[i][room_array[r].y_pos]=0;
+					
+				}
+			}
+			//now to make the up/down corrador
+			if(up_down>0)//up
+			{
+				for(i=room_array[r].y_pos; i<= room_array[next_room_numb].y_pos; i++)
+				{
+					if(dungion_map[room_array[next_room_numb].x_pos][i] != '.')
+					{
+						dungion_map[room_array[next_room_numb].x_pos][i] = '#';
+						dungion_hardness_map[room_array[next_room_numb].x_pos][i]=0;
+					}
+				}
+			}
+			else if (up_down<0) //down
+			{
+				for(i=room_array[next_room_numb].y_pos; i<= room_array[r].y_pos; i++)
+				{
+					if(dungion_map[room_array[next_room_numb].x_pos][i] != '.')
+					{
+						dungion_map[room_array[next_room_numb].x_pos][i] = '#';
+						dungion_hardness_map[room_array[next_room_numb].x_pos][i]=0;
+					}
+				}
+			}
+		}
+  	else if (left_right<0)
+		{
+			//its left
+			for(i=room_array[next_room_numb].x_pos; i<=room_array[r].x_pos; i++)
+			{
+				if(dungion_map[i][room_array[r].y_pos] != '.')
+				{
+					dungion_map[i][room_array[r].y_pos] = '#';
+					dungion_hardness_map[i][room_array[r].y_pos]=0;
+				}
+			}
+			//now to make the up/down corrador 
+			if(up_down<0)//down
+			{
+				for(i=room_array[next_room_numb].y_pos; i<= room_array[r].y_pos; i++)
+				{
+					if(dungion_map[room_array[next_room_numb].x_pos][i] != '.')
+					{
+						dungion_map[room_array[next_room_numb].x_pos][i] = '#';
+						dungion_hardness_map[room_array[next_room_numb].x_pos][i]=0;
+					}
+				}
+			}
+			else if (up_down>0) //up
+			{
+				for(i=room_array[r].y_pos; i<= room_array[next_room_numb].y_pos; i++)
+				{
+					if(dungion_map[room_array[next_room_numb].x_pos][i] != '.')
+					{
+						dungion_map[room_array[next_room_numb].x_pos][i] = '#';
+						dungion_hardness_map[room_array[next_room_numb].x_pos][i]=0;
+					}
+				}
+			}
+		}
+  		//if streight up/down
+  	else if(up_down>0)
+		{
+			//its up or stright left/right
+			for(i=room_array[r].y_pos; i<=room_array[next_room_numb].y_pos; i++)
+			{
+				if(dungion_map[room_array[r].x_pos][i] != '.')
+				{
+					dungion_map[room_array[r].x_pos][i] = '#';
+					dungion_hardness_map[room_array[r].x_pos][i]=0;
+				}
+			}
+		}
+  	else if (up_down<0)
+		{
+			//its down
+			for(i=room_array[next_room_numb].y_pos; i<=room_array[r].y_pos; i++)
+			{
+				if(dungion_map[room_array[r].x_pos][i] != '.')
+				{
+					dungion_map[room_array[r].x_pos][i] = '#';
+					dungion_hardness_map[room_array[r].x_pos][i]=0;
+				}
+			}
+		}
+  }
+  /*
+	//print map
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			if(dungion_map[k][j]=='+')
+			{
+				printf("%c", ' ');
+			}
+			else
+			{
+				printf("%c", dungion_map[k][j]);
+			}
+			
+	  }
+	  printf("\n");
+	}
+	*/
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			dungion_map_input[k][j]=dungion_map[k][j];
+			dungion_hardness_map_input[k][j]=dungion_hardness_map[k][j];
+	  }
+	}
+	
+	for(j=0; j<number_of_rooms; j++)
+	{
+		room_array_input[j]=room_array[j];
+	}
+	//dungion_map_input=dungion_map;
+	//dungion_hardness_map_input=dungion_hardness_map;
+	//room_array_input=room_array;
+	
+	return 0;
+	
+		/*
+	make array for room sizes
+		try to randomly place going down the array
+		if unable to place repopulate array 
+		untill eather x rooms made or repopulated
+		so many times (== number of rooms)
+		make room struct after placing the room
+		hide corridors inside rooms by drawing over 
+		(or not drawing if its a room)
+	*/
+}
+
+int print_map(char dungion_map[map_x_size][map_y_size], int map_x_size, int map_y_size, int number_of_rooms)
+{
+	int j;
+	int k;	
+	//int map_x_size = 80; //horizontal
+	//int map_y_size = 21; // veritical
+	//char *print_char=dungion_map;
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			if(dungion_map[k][j]=='+')
+			{
+				printf("%c", ' ');
+			}
+			else
+			{
+				printf("%c", dungion_map[k][j]);
+			}
+			//print_char++;
+			
+	  }
+	  printf("\n");
+	}
+	return 0;
+}
+
+int print_hardness_map(int dungion_hardness_map[map_x_size][map_y_size], int map_x_size, int map_y_size, int number_of_rooms)
+{
+	int j;
+	int k;	
+	//int map_x_size = 80; //horizontal
+	//int map_y_size = 21; // veritical
+	//int *print_char=dungion_hardness_map;
+	for(j=0; j<map_y_size; j++)
+	{
+		for(k=0; k<map_x_size; k++)
+		{
+			printf("%d", dungion_hardness_map[k][j]);
+			//print_char++;
+	  }
+	  printf("\n");
+	}
+		return 0;
+}
+
+int load_dungion(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[number_of_rooms],  int map_x_size, int map_y_size, int number_of_rooms)
+{
+	/*
+	bytes : info
+	0-5				:	file type marker
+	6-9				:	unsigned 32-bit int; file version marker; value =0
+	10-13			:	unsigned 32-bit int; size of file
+	14-1693		:	 cel by cell dungion hardness
+							-one byte is cell harness
+	1694-end	:	position of rooms
+							- 4 unsigned 8-bit integers each
+							--upperleft corner x position
+							--width (x demention)
+							--upperleft corner y position
+							--height (y demention)
+	*/
+	
+	//int i,j,k,numOfRooms;
+	//char markerString[5]={0x52,0x4c,0x47,0x32,0x32}; //to checck if file has correct name is hex for RLG229
+	//unsigned char FileVersionbuffer[4];
+	//unsigned char FileSizebuffer[4];
+	//unsigned char Cellbuffer[4];
+	//
+	//map_x_size*map_y_size 1 byte cells
+	
+	//4 bytes per room tell end
+	//
+	//unsigned char NumberOfRoomsbuffer[2]; 
+	//unsigned char PosOfRoomsbuffer[4];
+	
+	//5			: file type
+	//4 		: version number (0)
+	//4 		: size of file
+	//1680	: cell by cell hardness
+	//size - 1693	: rooms (each has 4bytes)
+	
+	
+	//int i;
+	//int j;
+	FILE *fp;
+  //char data_to_write[] = "this is tutorialspoint";
+  //int size= 5+4+4+1680+(number_of_rooms*4);
+ // char data_to_write[size];
+ 
+  char file_name[]="0";
+  //char file_name[]="$HOME/.rlg229/dungeon";
+  char file_ending[]=".rlg327";
+  strcat(file_name, file_ending);
+   
+   
+
+   
+
+   /* Open file for both reading and writing */
+  // fp = fopen(file_name, "w+");
+   fp = fopen("test.txt", "w+");
+
+   /* Write data to the file */
+  // fwrite(data_to_write, strlen(data_to_write) + 1, 1, fp);
+
+   /* Seek to the beginning of the file */
+   fseek(fp, SEEK_SET, 0);
+
+   /* Read and display data */ 
+   
+   char *buffer;
+   buffer= malloc(3000);
+   
+   fread(buffer, strlen(3000)+1, 1, fp);
+   printf("%s\n", buffer);
+   fclose(fp);
+
+   /*
+   if(buffer[0]='r' && buffer[1]='l' && buffer[2]='g' && buffer[3]='3' && buffer[4]='2' && buffer[5]='7')
+   {
+   	printf("%c\n", 'y');
+   }
+   else
+   {
+   	printf("%c\n", 'n');
+   }
+   */
+   		/*
+		-- 4 unsigned 8-bit integers each
+		--upperleft corner x position
+		--width (x demention)
+		--upperleft corner y position
+		--height (y demention)
+		
+		
+		struct room
+		{
+			int x_pos; //uper left corrner
+			int y_pos;
+			int x_size;
+			int y_size;
+		};
+		*/
+   //after load into buffer
+   /*
+   	data_to_write[0]='r';
+	data_to_write[1]='l';
+	data_to_write[2]='g';
+	data_to_write[3]='3';
+	data_to_write[4]='2';
+	data_to_write[5]='7';
+	data_to_write[6]='0';
+	data_to_write[7]='0';
+	data_to_write[8]='0';
+	data_to_write[9]='0';
+	
+	
+  k=10;
+  for(i=0;i<map_x_size;i++)
+	{
+		for(j=0;j<map_y_size;j++)
+		{
+			//dungion_hardness_map_input[map_x_size][map_y_size]
+			//  
+			data_to_write[k]=dungion_hardness_map_input[i][j]+'0';
+			k++;
+		}
+	}
+	for(i=0;i<number_of_rooms;i++)
+	{
+
+		data_to_write[k]=room_array_input[i].x_pos+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].y_pos+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].x_size+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].y_size+'0';
+		k++;
+	}
+	*/
+   
+	//deallocate buffer
+	return 0;
+	
+}
+
+int save_dungion(char dungion_map_input[map_x_size][map_y_size], int dungion_hardness_map_input[map_x_size][map_y_size], struct room room_array_input[6],  int map_x_size, int map_y_size, int number_of_rooms)
+{
+	
+		//5			: file type
+	//4 		: version number (0)
+	//4 		: size of file
+	//1680	: cell by cell hardness
+	//file size - 1693	: rooms (each has 4bytes)
+	
+	
+	int i;
+	int j;
+	int k;
+	FILE *fp;
+	int size= 5+4+4+1680+(number_of_rooms*4);
+  char data_to_write[size];
+  //char buffer[100];
+  //char file_name[]="0";
+  
+  //char file_ending[]=".rlg327";
+  //strcat(file_name, file_ending);
+   
+	//file is name.rlg327
+	data_to_write[0]='r';
+	data_to_write[1]='l';
+	data_to_write[2]='g';
+	data_to_write[3]='3';
+	data_to_write[4]='2';
+	data_to_write[5]='7';
+	data_to_write[6]='0';
+	data_to_write[7]='0';
+	data_to_write[8]='0';
+	data_to_write[9]='0';
+	
+	
+  k=10;
+  for(i=0;i<map_x_size;i++)
+	{
+		for(j=0;j<map_y_size;j++)
+		{
+			//dungion_hardness_map_input[map_x_size][map_y_size]
+			//  
+			data_to_write[k]=dungion_hardness_map_input[i][j]+'0';
+			k++;
+		}
+	}
+	for(i=0;i<number_of_rooms;i++)
+	{
+		/*
+		-- 4 unsigned 8-bit integers each
+		--upperleft corner x position
+		--width (x demention)
+		--upperleft corner y position
+		--height (y demention)
+		*/
+		/*
+		struct room
+		{
+			int x_pos; //uper left corrner
+			int y_pos;
+			int x_size;
+			int y_size;
+		};
+		*/
+		data_to_write[k]=room_array_input[i].x_pos+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].y_pos+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].x_size+'0';
+		k++;
+		data_to_write[k]=room_array_input[i].y_size+'0';
+		k++;
+	}
+
+   /* Open file for both reading and writing */
+   fp = fopen("test.txt", "w+");
+
+   /* Write data to the file */
+   fwrite(data_to_write, strlen(data_to_write) + 1, 1, fp);
+
+   /* Seek to the beginning of the file */
+   //fseek(fp, SEEK_SET, 0);
+
+   /* Read and display data */
+ 	//fread(buffer, strlen(data_to_write)+1, 1, fp);
+  //printf("%s\n", buffer);
+  
+  fclose(fp);
+
+	
+	return 0;
+}

@@ -1,0 +1,20 @@
+Aug 30, 6:30pm
+	started on dungion_main.c and dungion_make_dungion.c. I amed these two seperate
+becouse i will need to call make_dungion (what makes the dungion map) eventualy and
+might as well do it from the start. dungoion_main right now will only call make_dungion
+untill more is added
+September 2; 5:15pm
+	finished dungion_map() so tha it correctly displayes the romes and they
+are stored in a array of room structs. TODO make hallways
+September 2; 6:15pm
+	made hallways work. TODO find out why some rooms seam disconected occationaly
+September 3; 10:30am tried to figure why some rooms are not connecter and odd hallways
+September 5, 6  Found why its making more rooms then needed (when seting room count to
+2 it sometimes made 3) I was cycling through the entire room_placement_array every time
+its reset i made extra rooms
+September 6 8pm Found the bug with odd hallways, both the vertical andhorisonatal
+hallways originate from teh corner of the room (not squaring). TODO
+make up down, strait up down, and add up downhallways to left right
+	8:20 fixed it by redefining what next_room_number is (before checking if its 
+the last and redefining it) instead of having it count up every loop
+September 7: rolled the assignment 1.01 into the tarball for submition

@@ -1,0 +1,71 @@
+#include <ncurses.h>
+#include "dungion.h"
+
+
+//int map_x_size; =80
+//int map_y_size; =21
+//int number_of_rooms; =6
+//int print_fow_map(char dungion_map[map_x_size][map_y_size], int map_x_size, int map_y_size, int number_of_rooms, char monster_map_input[map_x_size][map_y_size], int player_x, int player_y, char fow_map[map_x_size][map_y_size])
+int print_fow_map(char dungion_map[80][21], int map_x_size, int map_y_size, int number_of_rooms, char monster_map_input[80][21], int player_x, int player_y, char fow_map[80][21])
+{
+	int j;
+	int k;  
+	int distance;
+	distance=0;
+	//distance /5 //or as mentioned in class all circles are surare in rogue likes
+	//sqr((x2-x1)^2 +(y1-y2)^2)
+	//int map_x_size = 80; //horizontal
+	//int map_y_size = 21; // veritical
+	//fow_map[map_x_size][map_y_size];
+	for(j=0; j<21; j++)//map_y_size
+	{
+		for(k=0; k<80; k++)//map_x_size
+		{
+			//distance= sqrt(((player_x-80)*(player_x-80))+((player_y-21)*(player_y-21)));
+			//if(distance<6)
+		   if((player_y-4)<j && (player_y+4)>j && (player_x-4)<k && (player_x+4)>k) 
+		    {
+		      fow_map[k][j] = dungion_map[k][j];
+		      distance =1;
+		    }
+		   if(distance==0)
+		     {
+
+		     }
+		  // fow_map[k][j] = dungion_map[k][j];
+			
+			if(monster_map_input[k][j]!='#' && distance==1)
+			{
+				mvaddch(j, k, monster_map_input[k][j]);
+				//printf("%c", monster_map_input[k][j]);
+			}
+			else if(fow_map[k][j]=='+')
+			{
+				mvaddch(j, k, ' '); //y, x
+				//printf("%c", ' ');
+			}
+			else
+			{
+				if(fow_map[k][j]=='#')
+				{
+					mvaddch(j, k, '.');
+					//printf("%c", '.');
+				}
+				else
+				{
+					mvaddch(j, k, fow_map[k][j]);
+					//printf("%c", fow_map[k][j]);
+				}
+				//update fow_map
+			}
+			distance =0;
+	  }
+	  //printf("\n");
+	}
+	
+	//printf("%c", 'a');
+	//printf("\n");
+	//usleep(125000);
+	refresh();
+	return 0;
+}

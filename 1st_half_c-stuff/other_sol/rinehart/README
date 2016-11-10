@@ -1,0 +1,4 @@
+My program does not deviate from the standard. It prints the dungeon normally,
+followed by the distances of walls only, followed by all of the distances.
+I used multiple arrays, stored in a struct. One for hardness, one for occupants,
+One for the nodes, and so on. I use the provided Fibonacci heap for Dijkstra's sorting.

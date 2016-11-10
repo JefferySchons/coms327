@@ -1,0 +1,9 @@
+use the hardness map
+pick place A B that is open
+
+-option one 
+set distance around A B
+have var
+loop through array placing distancces that are next to other distances
+if a distance is set then set var
+if is not changed end loop

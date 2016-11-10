@@ -1,0 +1,5 @@
+all: dungion mainmake
+
+dungion: dungion_make_dungion.c dungion_main.c 
+	gcc -Wall -Werror -ggdb dungion_make_dungion.c dungion_header.h dungion_main.c -o dungion
+

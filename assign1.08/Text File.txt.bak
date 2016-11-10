@@ -1,0 +1,23 @@
+g++ -Wall -Werror -Wno-write-strings -ggdb dungion_make_dungion.cpp dungion_cpp.cpp -o dungion -lncurses
+dungion_make_dungion.cpp: In function 'int main(int, char**)':
+dungion_make_dungion.cpp:188:107: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '1' to 'int make_dungeon_map(char (*)[21], int (*)[21], room*, int, int, int)'
+  k=make_dungeon_map(dungion_map, dungion_hardness_map, room_array, map_x_size, map_y_size, number_of_rooms);
+                                                                                                           ^
+dungion_make_dungion.cpp:209:127: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '1' to 'int place_monsters(char (*)[21], char (*)[21], room*, int, int, int, int, creature*)'
+   k=place_monsters(monster_map, dungion_map, room_array, map_x_size, map_y_size, number_of_rooms, num_monsters, creature_array);
+                                                                                                                               ^
+dungion_make_dungion.cpp:213:161: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '1' to 'int run_game(char (*)[21], char (*)[21], int (*)[21], char (*)[21], room*, int, int, int, int, creature*, int (*)[21])'
+    k=run_game(monster_map, dungion_map, dungion_hardness_map, pathfinding_map, room_array, map_x_size, map_y_size, number_of_rooms, num_monsters, creature_array);
+                                                                                                                                                                 ^
+dungion_make_dungion.cpp: In function 'int run_game(char (*)[21], char (*)[21], int (*)[21], char (*)[21], room*, int, int, int, int, creature*, int (*)[21])':
+dungion_make_dungion.cpp:1347:84: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '4' to 'int place_objects(char (*)[21], int, int, char (*)[21], object*)'
+  k=place_objects(dungion_map_input, map_x_size, map_y_size, object_map, object_list);
+                                                                                    ^
+dungion_make_dungion.cpp:1357:166: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '8' to 'int print_fow_map(char (*)[21], int, int, int, char (*)[21], int, int, char (*)[21], char (*)[21])'
+  k=print_fow_map(dungion_map_input, map_x_size, map_y_size, number_of_rooms, monster_map_input, creature_array[0].x_pos, creature_array[0].y_pos, fow_map, object_map);
+                                                                                                                                                                      ^
+dungion_make_dungion.cpp:3821:168: error: cannot convert 'char (*)[(((sizetype)(((ssizetype)map_y_size) + -1)) + 1)]' to 'char (*)[21]' for argument '8' to 'int print_fow_map(char (*)[21], int, int, int, char (*)[21], int, int, char (*)[21], char (*)[21])'
+  
+                                                                                                                                                                        ^
+make: *** [dungion] Error 1
+student@coms327-vm:~/cs327/108$ 

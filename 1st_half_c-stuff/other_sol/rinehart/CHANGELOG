@@ -1,0 +1,16 @@
+9/18/16 9:40pm: Began project. Moved hardness to a struct, removed unused functions from last week.
+				Introduced and rectified several errors where if(!ROOM == X) should have had parens
+				Or used a !=. Finished random player placement.
+9/19/16 3:40pm: Considered some major restructuring. Decided against it.
+		9:19pm: Wrestled with Jeremy's code for far too long before deciding (again) to attempt to 
+				Write my own dijkstra. I'll try to utilize the provided data structure, but my hopes
+				Aren't high.
+		10:38pm:Well I finished dijkstra except everything is -1 and it's not good.
+9/20/16 1:06am: Fixed dijkstra. Was a problem with unsigned character overflow. Now I just need
+				To account for walls, and for diagonals being the same. Both should be fairly trivial
+		10:31am: Fixed walls issue, not behaving as expected. Will investigate
+		11:16am: Fixed wall issue better. All that's left is diagonals. 
+		11:36am: Fixed diagonals. Will meet rest of spec tonight.
+		12:25pm: Realized I neglected to include tunnelling code. 
+		2:25pm:  Finished project.
+		9:37pm:  Fixed a bug related to printing (misplaced newline distorted a print)
